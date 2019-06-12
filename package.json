@@ -1,0 +1,25 @@
+{
+  "name": "sirtet",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sdegueldre/sirtet.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sdegueldre/sirtet/issues"
+  },
+  "homepage": "https://github.com/sdegueldre/sirtet#readme",
+  "devDependencies": {
+    "file-loader": "^4.0.0",
+    "webpack": "^4.33.0",
+    "webpack-cli": "^3.3.4"
+  }
+}
