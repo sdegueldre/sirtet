@@ -11,7 +11,6 @@ export default class Graphics {
     window.addEventListener('keydown', this.keyPressHandler.bind(this));
     window.addEventListener('keyup', this.keyReleaseHandler.bind(this));
     window.addEventListener('resize', this.resizeHandler.bind(this));
-    this.preload();
   }
 
   startSketch(){
