@@ -30,7 +30,6 @@ graphics.setup = function(){
 	frontCanvas = createCanvas();
   backCanvas = createCanvas();
   frontCanvas.style.zIndex = 1;
-  backCanvas.style.zIndex = 0;
   this.initGameState();
 	this.windowResized();
 }

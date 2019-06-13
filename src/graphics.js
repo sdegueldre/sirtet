@@ -1,13 +1,11 @@
 export default class Graphics {
-  constructor(options){
-    Object.assign(this, options);
+  constructor(){
     this.frameCount = 0;
-    this.windowHeight;
-    this.windowWidth;
     this.itemsToLoad = 0;
 
     this.windowHeight = window.innerHeight;
     this.windowWidth = window.innerWidth;
+
     window.addEventListener('keydown', this.keyPressHandler.bind(this));
     window.addEventListener('keyup', this.keyReleaseHandler.bind(this));
     window.addEventListener('resize', this.resizeHandler.bind(this));
@@ -16,10 +14,6 @@ export default class Graphics {
   startSketch(){
     this.setup();
     this.refresher();
-  }
-
-  draw(){
-    console.log('Graphics draw was not overriden');
   }
 
   refresher(){
