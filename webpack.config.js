@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   mode: "development",
   module: {
@@ -13,4 +15,9 @@ module.exports = {
       },
     ],
   },
+  output: {
+    path: path.resolve(__dirname, './docs'),
+    filename: 'js/bundle.js',
+    publicPath: '/sirtet/'
+  }
 };
