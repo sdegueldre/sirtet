@@ -15,8 +15,11 @@
 ## Controls
 
 <kbd>←</kbd><kbd>→</kbd> Move
+
 <kbd>↑</kbd> Rotate
+
 <kbd>↓</kbd> Fast drop
+
 <kbd>esc</kbd> Pause
 
 * * *
