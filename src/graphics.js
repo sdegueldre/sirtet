@@ -80,28 +80,27 @@ export default class Graphics {
   }
 
   initGameState(){
-    this.gameState = {};
-    const gameState = this.gameState;
     this.tileGrid = new TileGrid(this.boardWidth, this.boardHeight, this.spriteArray);
-    gameState.paused = false;
-    gameState.score = 0;
-    gameState.sequence = shuffle([0, 1, 2, 3, 4, 5, 6]);
-    gameState.current = 0;
-    gameState.active;
-    gameState.next = new Tetromino(gameState.sequence[0], this.spriteArray, this.tileGrid);
-    gameState.nextTetromino = function(){
-      gameState.active = gameState.next;
-      gameState.current++;
-      if(gameState.current === 7){
-        gameState.sequence = shuffle(gameState.sequence);
-        gameState.current = 0;
+    this.gameState = {
+      paused: false,
+      score: 0,
+      sequence: shuffle([0, 1, 2, 3, 4, 5, 6]),
+      current: 0,
+      menuOverlay: false,
+      level: 0,
+      clearedLines: 0,
+      nextTetromino: function(){
+        this.active = this.next;
+        this.current++;
+        if(this.current === 7){
+          this.sequence = shuffle(this.sequence);
+          this.current = 0;
+        }
+        this.next = new Tetromino(this.sequence[this.current], this.spriteArray, this.tileGrid);
       }
-      gameState.next = new Tetromino(gameState.sequence[gameState.current], this.spriteArray, this.tileGrid);
     };
-    gameState.nextTetromino();
-    gameState.menuOverlay = false;
-    gameState.level = 0;
-    gameState.clearedLines = 0;
+    this.gameState.next = new Tetromino(this.gameState.sequence[0], this.spriteArray, this.tileGrid);
+    this.gameState.nextTetromino();
   }
 
   windowResized(){
