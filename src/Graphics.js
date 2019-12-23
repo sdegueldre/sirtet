@@ -1,5 +1,14 @@
 import TileGrid from './Tilegrid.js';
-import Tetromino from "./Tetromino";
+import Tetromino from './Tetromino';
+
+import Background from '../assets/bg.png';
+import I from '../assets/I.png';
+import J from '../assets/J.png';
+import L from '../assets/L.png';
+import O from '../assets/O.png';
+import S from '../assets/S.png';
+import T from '../assets/T.png';
+import Z from '../assets/Z.png';
 
 const BASE_SPEED = 60;
 
@@ -11,7 +20,6 @@ export default class Graphics {
     this.boardHeight = boardHeight;
     this.frameCount = 0;
     this.itemsToLoad = 0;
-    this.spriteArray = {};
 
     this.windowHeight = window.innerHeight;
     this.windowWidth = window.innerWidth;
@@ -81,6 +89,7 @@ export default class Graphics {
 
   initGameState(){
     this.tileGrid = new TileGrid(this.boardWidth, this.boardHeight, this.spriteArray);
+    const self = this;
     this.gameState = {
       paused: false,
       score: 0,
@@ -96,7 +105,7 @@ export default class Graphics {
           this.sequence = shuffle(this.sequence);
           this.current = 0;
         }
-        this.next = new Tetromino(this.sequence[this.current], this.spriteArray, this.tileGrid);
+        this.next = new Tetromino(this.sequence[this.current], self.spriteArray, self.tileGrid);
       }
     };
     this.gameState.next = new Tetromino(this.gameState.sequence[0], this.spriteArray, this.tileGrid);
@@ -118,10 +127,16 @@ export default class Graphics {
   }
 
   preload(){
-    this.spriteArray.background = this.loadImage(require("../assets/bg.png"));
-    for(let shape of Tetromino.shapes){
-      this.spriteArray[shape] = this.loadImage(require(`../assets/${shape}.png`));
-    }
+    this.spriteArray = {
+      background: this.loadImage(Background),
+      I: this.loadImage(I),
+      J: this.loadImage(J),
+      L: this.loadImage(L),
+      O: this.loadImage(O),
+      S: this.loadImage(S),
+      T: this.loadImage(T),
+      Z: this.loadImage(Z),
+    };
   }
 
   draw(repaint){
