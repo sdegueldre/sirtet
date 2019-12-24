@@ -73,12 +73,11 @@ export default class Graphics {
   }
 
   setup(){
-    // Only used for the falling tetromino and pause menu
-    this.frontCanvas = new Canvas();
     // Background: only rerendered once after a tetromino drops, contains the board
     // and blocks that have already landed
     this.backCanvas = new Canvas();
-    this.frontCanvas.style.zIndex = 1;
+    // Only used for the falling tetromino and pause menu
+    this.frontCanvas = new Canvas();
     this.initGameState();
     this.windowResized();
   }
@@ -116,7 +115,7 @@ export default class Graphics {
 
   windowResized(){
     let cvWidth = this.windowWidth;
-    let cvHeight = this.windowHeight - 32;
+    let cvHeight = this.windowHeight;
     this.frontCanvas.width = this.backCanvas.width = cvWidth;
     this.frontCanvas.height = this.backCanvas.height = cvHeight;
     this.tileSize = Math.floor(cvHeight * 0.98 / this.boardHeight);
@@ -250,10 +249,10 @@ export default class Graphics {
   }
 }
 
-export function Canvas(width, height){
+function Canvas(){
   let canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
   canvas.context = canvas.getContext('2d');
   canvas.style.position = "absolute";
   canvas.clear = function(){

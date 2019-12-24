@@ -12,18 +12,19 @@ body {
   align-items: center;
 }
 
-#textContainer {
-  height: 2em;
-  display: flex;
+.instruction-text {
+  color: #ff8a00;
+  font-family: sans-serif;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0,0,0,0.5);
+  margin: 0;
+  padding: 1em;
+  line-height: 1.6;
 }
 
 canvas {
   position: absolute;
   left: 0;
-}
-
-div p {
-  color: #ff8a00;
-  font-family: sans-serif;
-  margin: auto;
 }
