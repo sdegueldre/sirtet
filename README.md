@@ -9,9 +9,8 @@
 * Clone the repo: `git clone git@github.com:sdegueldre/sirtet.git`
 * Install the dependencies: `npm install`
 * Modify some files
-* Run webpack: `npx webpack` for a single build, and `npx webpack --watch` to rebuild automatically when files change
-  - note: you will need to change the `publicPath` to `/` in webpack.config.js before doing this, as it is setup to bundle the files to deploy on the github page of this repo by default. Hopefully I will change this so that you can specify the `publicPath` through an environment variable soon^tm
-* Serve the docs folder using your favourite web server: `npx serve docs`
+* Use `npm run dev` to build the project locally (`http://localhost:5000`) and rebuild automatically when files are changed
+* Use `npm run build` to build the project once for deployment. This command will set webpack's `publicPath` to `/sirtet/`, as this is the path in which it runs on my github page. If you want to deploy this in a different directory, you can invoke webpack directly and set the `PUBLIC_PATH` environment variable to your desired public path, i.e. `npx webpack --env.PUBLIC_PATH="/projects/tetris_clones/example/"`, which will let you deploy the contents of the docs folder at `http://example.com/projects/tetris_clones/example/`
 
 ## Controls
 
