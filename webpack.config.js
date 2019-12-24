@@ -1,6 +1,6 @@
 const path = require('path');
 
-module.exports = {
+module.exports = env => ({
   mode: "development",
   module: {
     rules: [
@@ -18,6 +18,6 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './docs'),
     filename: 'js/bundle.js',
-    publicPath: '/sirtet/'
+    publicPath: env.PUBLIC_PATH || '/'
   }
-};
+});
