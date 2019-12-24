@@ -23,10 +23,6 @@ export default class Graphics {
 
     this.windowHeight = window.innerHeight;
     this.windowWidth = window.innerWidth;
-
-    window.addEventListener('keydown', this.keyPressHandler.bind(this));
-    window.addEventListener('keyup', this.keyReleaseHandler.bind(this));
-    window.addEventListener('resize', this.resizeHandler.bind(this));
   }
 
   startSketch(){
@@ -110,6 +106,12 @@ export default class Graphics {
     };
     this.gameState.next = new Tetromino(this.gameState.sequence[0], this.spriteArray, this.tileGrid);
     this.gameState.nextTetromino();
+    if(!this.listening){
+        window.addEventListener('keydown', this.keyPressHandler.bind(this));
+        window.addEventListener('keyup', this.keyReleaseHandler.bind(this));
+        window.addEventListener('resize', this.resizeHandler.bind(this));
+        this.listening = true;
+    }
   }
 
   windowResized(){
