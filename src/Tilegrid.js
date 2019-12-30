@@ -7,7 +7,7 @@ export default class TileGrid {
     for(let i = 0; i < width; i++){
       this.tile[i] = [];
       for(let j = 0; j < height; j++){
-        this.tile[i][j] = this.spriteArray["background"];
+        this.tile[i][j] = this.spriteArray.background;
       }
     }
   }
