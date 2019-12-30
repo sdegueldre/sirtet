@@ -1,7 +1,9 @@
 {
+    "parser": "esprima",
     "env": {
         "commonjs": true,
-        "es6": true
+        "es6": true,
+        "browser": true,
     },
     "extends": "eslint:recommended",
     "parserOptions": {
@@ -39,10 +41,4 @@
         "space-infix-ops": ["warn"],
         "space-in-parens": ["warn", "never"]
     },
-    "globals": {
-        "console": true,
-        "window": true,
-        "Image": true,
-        "document": "true",
-    }
 }

@@ -1,4 +1,4 @@
-import Graphics from "./Graphics";
+import Game from "./Game";
 
-const graphics = new Graphics(10, 20);
-graphics.preload();
+const game = new Game(10, 20);
+game.init();

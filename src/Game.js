@@ -16,7 +16,6 @@ export default class Graphics {
     this.boardWidth = boardWidth;
     this.boardHeight = boardHeight;
     this.frameCount = 0;
-    this.itemsToLoad = 0;
 
     this.windowHeight = window.innerHeight;
     this.windowWidth = window.innerWidth;
@@ -33,12 +32,6 @@ export default class Graphics {
     this.draw();
     this.frameCount++;
     window.requestAnimationFrame(this.refresher.bind(this));
-  }
-
-  loadingHandler(){
-    if(--this.itemsToLoad === 0){
-      this.startSketch();
-    }
   }
 
   keyPressHandler(event){
@@ -64,9 +57,9 @@ export default class Graphics {
   loadImage(path){
     let img = new Image();
     img.src = path;
-    this.itemsToLoad++;
-    img.addEventListener('load', this.loadingHandler.bind(this));
-    return img;
+    return new Promise(resolve => {
+        img.addEventListener('load', () => resolve(img));
+    });
   }
 
   setup(){
@@ -124,18 +117,21 @@ export default class Graphics {
     this.draw("backCanvas");
   }
 
-  preload(){
+  async init(){
     this.spriteArray = {};
+    const promises = [];
     for(let key in assets){
-        this.spriteArray[key] = this.loadImage([assets[key]]);
+        promises.push(this.loadImage([assets[key]]).then(img => this.spriteArray[key] = img));
     }
+    await Promise.all(promises);
+    this.startSketch();
   }
 
   draw(repaint){
     if(!this.gameState.paused || repaint === "backCanvas"){
       let toRedraw = (typeof repaint == "undefined") ? this.update() : repaint;
 
-      if(toRedraw === "backCanvas" && this.backCanvas){
+      if(toRedraw === "backCanvas"){
         this.backCanvas.clear();
         this.backCanvas.context.fillStyle = '#ff8a00';
         const border = Math.ceil(this.tileSize * 0.05);
@@ -153,7 +149,7 @@ export default class Graphics {
         this.gameState.next.display(-8, 1.5, this.tileSize, this.backCanvas);
         toRedraw = "frontCanvas";
       }
-      if(toRedraw === "frontCanvas" && this.frontCanvas){
+      if(toRedraw === "frontCanvas"){
         this.frontCanvas.clear();
         this.gameState.active.display(0, 0, this.tileSize, this.frontCanvas);
       }
