@@ -1,5 +1,4 @@
 {
-    "parser": "esprima",
     "env": {
         "commonjs": true,
         "es6": true,
@@ -9,9 +8,9 @@
     "extends": "eslint:recommended",
     "parserOptions": {
         "sourceType": "module",
+        "ecmaVersion": 2017,
         "ecmaFeatures": {
             "modules": true,
-            "ecmaVersion": 2017
         },
     },
     "rules": {
