@@ -16,9 +16,6 @@ export default class Graphics {
     this.boardWidth = boardWidth;
     this.boardHeight = boardHeight;
     this.frameCount = 0;
-
-    this.windowHeight = window.innerHeight;
-    this.windowWidth = window.innerWidth;
   }
 
   startSketch(){
@@ -27,8 +24,6 @@ export default class Graphics {
   }
 
   refresher(){
-    this.windowHeight = window.innerHeight;
-    this.windowWidth = window.innerWidth;
     this.draw();
     this.frameCount++;
     window.requestAnimationFrame(this.refresher.bind(this));
@@ -47,8 +42,6 @@ export default class Graphics {
   }
 
   resizeHandler(event){
-    this.windowHeight = window.innerHeight;
-    this.windowWidth = window.innerWidth;
     if(this.windowResized){
       this.windowResized(event);
     }
@@ -104,8 +97,8 @@ export default class Graphics {
   }
 
   windowResized(){
-    let cvWidth = this.windowWidth;
-    let cvHeight = this.windowHeight;
+    let cvWidth = window.innerWidth;
+    let cvHeight = window.innerHeight;
     this.frontCanvas.width = this.backCanvas.width = cvWidth;
     this.frontCanvas.height = this.backCanvas.height = cvHeight;
     this.tileSize = Math.floor(cvHeight * 0.98 / this.boardHeight);
@@ -163,15 +156,15 @@ export default class Graphics {
     this.frontCanvas.context.save();
     this.frontCanvas.context.resetTransform();
     this.frontCanvas.context.fillStyle = 'rgba(50,50,50,0.5)';
-    this.frontCanvas.context.fillRect(0, 0, this.windowWidth, this.windowHeight);
+    this.frontCanvas.context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
     this.frontCanvas.context.strokeStyle = `black`;
     this.frontCanvas.context.lineWidth = 0.1 * scale;
     this.frontCanvas.context.font = `${scale * 2}px sans-serif`;
     this.frontCanvas.context.textAlign = 'center';
     this.frontCanvas.context.fillStyle = 'white';
-    this.frontCanvas.context.strokeText("Paused", this.windowWidth / 2, 2 * scale);
-    this.frontCanvas.context.fillText("Paused", this.windowWidth / 2, 2 * scale);
+    this.frontCanvas.context.strokeText("Paused", window.innerWidth / 2, 2 * scale);
+    this.frontCanvas.context.fillText("Paused", window.innerWidth / 2, 2 * scale);
 
     this.frontCanvas.context.restore();
     this.gameState.menuOverlay = true;
