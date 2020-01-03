@@ -3,8 +3,8 @@ import Tetromino from './Tetromino';
 
 const req = require.context('../assets/', false, /\.png$/);
 const assets = req.keys().reduce((acc, v) => {
-    acc[v.match(/\/(.*)\.png$/)[1]] = req(v);
-    return acc;
+  acc[v.match(/\/(.*)\.png$/)[1]] = req(v);
+  return acc;
 }, Object.create(null));
 
 const BASE_SPEED = 60;
@@ -16,6 +16,10 @@ export default class Graphics {
     this.boardWidth = boardWidth;
     this.boardHeight = boardHeight;
     this.frameCount = 0;
+    this.score = document.getElementById('score');
+    this.level = document.getElementById('level');
+    this.next = document.getElementById('next');
+    this.menu = document.getElementById('menu');
   }
 
   startSketch(){
@@ -51,7 +55,7 @@ export default class Graphics {
     let img = new Image();
     img.src = path;
     return new Promise(resolve => {
-        img.addEventListener('load', () => resolve(img));
+      img.addEventListener('load', () => resolve(img));
     });
   }
 
@@ -61,6 +65,12 @@ export default class Graphics {
     this.backCanvas = new Canvas();
     // Only used for the falling tetromino and pause menu
     this.frontCanvas = new Canvas();
+    this.frontCanvas.classList.add('position-absolute');
+    // Displays next tetromino
+    this.nextCanvas = new Canvas(this.tileSize * 4, this.tileSize * 2);
+
+    document.getElementById('game-container').append(this.backCanvas, this.frontCanvas);
+    document.getElementById('next').append(this.nextCanvas);
     this.initGameState();
     this.windowResized();
   }
@@ -73,7 +83,6 @@ export default class Graphics {
       score: 0,
       sequence: shuffle([0, 1, 2, 3, 4, 5, 6]),
       current: 0,
-      menuOverlay: false,
       level: 0,
       clearedLines: 0,
       nextTetromino: function(){
@@ -89,24 +98,20 @@ export default class Graphics {
     this.gameState.next = new Tetromino(this.gameState.sequence[0], this.spriteArray, this.tileGrid);
     this.gameState.nextTetromino();
     if(!this.listening){
-        window.addEventListener('keydown', this.keyPressHandler.bind(this));
-        window.addEventListener('keyup', this.keyReleaseHandler.bind(this));
-        window.addEventListener('resize', this.resizeHandler.bind(this));
-        this.listening = true;
+      window.addEventListener('keydown', this.keyPressHandler.bind(this));
+      window.addEventListener('keyup', this.keyReleaseHandler.bind(this));
+      window.addEventListener('resize', this.resizeHandler.bind(this));
+      this.listening = true;
     }
   }
 
   windowResized(){
-    let cvWidth = window.innerWidth;
-    let cvHeight = window.innerHeight;
-    this.frontCanvas.width = this.backCanvas.width = cvWidth;
-    this.frontCanvas.height = this.backCanvas.height = cvHeight;
-    this.tileSize = Math.floor(cvHeight * 0.98 / this.boardHeight);
-    let horizontal = Math.floor(cvWidth / 2 - this.boardWidth * this.tileSize / 2);
-    let vertical = Math.floor(cvHeight / 2 - this.boardHeight * this.tileSize / 2);
-    this.frontCanvas.context.translate(horizontal, vertical);
-    this.backCanvas.context.translate(horizontal, vertical);
-    this.gameState.menuOverlay = false;
+    this.tileSize = Math.floor(window.innerHeight * 0.98 / this.boardHeight);
+    this.frontCanvas.height = this.backCanvas.height = (this.tileSize * (this.boardHeight + 0.1));
+    this.frontCanvas.width = this.backCanvas.width = (this.tileSize * (this.boardWidth + 0.1));
+    this.nextCanvas.width = this.nextCanvas.height = (this.tileSize * 4);
+    const border = this.tileSize * 0.05;
+    [this.frontCanvas, this.backCanvas].forEach(c => c.context.translate(border, border));
     this.draw("backCanvas");
   }
 
@@ -114,7 +119,7 @@ export default class Graphics {
     this.spriteArray = {};
     const promises = [];
     for(let key in assets){
-        promises.push(this.loadImage([assets[key]]).then(img => this.spriteArray[key] = img));
+      promises.push(this.loadImage([assets[key]]).then(img => this.spriteArray[key] = img));
     }
     await Promise.all(promises);
     this.startSketch();
@@ -135,11 +140,10 @@ export default class Graphics {
           this.boardHeight * this.tileSize + 2 * border
         );
         this.tileGrid.display(this.tileSize, this.backCanvas);
-        this.backCanvas.context.font = `${this.tileSize}px monospace`;
-        this.backCanvas.context.fillText("Score: " + this.gameState.score, this.tileSize * (this.boardWidth + 0.5), this.tileSize);
-        this.backCanvas.context.fillText("Level " + this.gameState.level, this.tileSize * (this.boardWidth + 0.5), this.tileSize * 2.5);
-        this.backCanvas.context.fillText("Up next: ", this.tileSize * -5, this.tileSize);
-        this.gameState.next.display(-8, 1.5, this.tileSize, this.backCanvas);
+        this.score.textContent = `Score: ${this.gameState.score}`;
+        this.level.textContent = `Level: ${this.gameState.level}`;
+        this.nextCanvas.clear();
+        this.gameState.next.display(-3, 0, this.tileSize, this.nextCanvas);
         toRedraw = "frontCanvas";
       }
       if(toRedraw === "frontCanvas"){
@@ -147,27 +151,13 @@ export default class Graphics {
         this.gameState.active.display(0, 0, this.tileSize, this.frontCanvas);
       }
     }
-    if(this.gameState.paused && this.gameState.menuOverlay === false){
-      this.drawMenu(this.tileSize);
+    if(this.gameState.paused){
+      if(this.menu.style.display !== 'flex'){
+        this.menu.style.display = 'flex';
+      }
+    } else {
+      this.menu.style.display = 'none';
     }
-  }
-
-  drawMenu(scale){
-    this.frontCanvas.context.save();
-    this.frontCanvas.context.resetTransform();
-    this.frontCanvas.context.fillStyle = 'rgba(50,50,50,0.5)';
-    this.frontCanvas.context.fillRect(0, 0, window.innerWidth, window.innerHeight);
-
-    this.frontCanvas.context.strokeStyle = `black`;
-    this.frontCanvas.context.lineWidth = 0.1 * scale;
-    this.frontCanvas.context.font = `${scale * 2}px sans-serif`;
-    this.frontCanvas.context.textAlign = 'center';
-    this.frontCanvas.context.fillStyle = 'white';
-    this.frontCanvas.context.strokeText("Paused", window.innerWidth / 2, 2 * scale);
-    this.frontCanvas.context.fillText("Paused", window.innerWidth / 2, 2 * scale);
-
-    this.frontCanvas.context.restore();
-    this.gameState.menuOverlay = true;
   }
 
   update(){
@@ -213,7 +203,6 @@ export default class Graphics {
         break;
       case "Escape":
         this.gameState.paused ^= true;
-        this.gameState.menuOverlay = false;
         break;
     }
     this.draw("frontCanvas");
@@ -221,33 +210,31 @@ export default class Graphics {
 
   keyReleased(event){
     switch(event.code){
-    case "ArrowDown":
-      this.tickSpeed = BASE_SPEED;
-      break;
+      case "ArrowDown":
+        this.tickSpeed = BASE_SPEED;
+        break;
     }
     this.draw("frontCanvas");
   }
 }
 
-function Canvas(){
+function Canvas(height = window.innerHeight, width){
   let canvas = document.createElement("canvas");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.height = height;
+  canvas.width = width || height * this.boardWidth / this.boardHeight;
   canvas.context = canvas.getContext('2d');
-  canvas.style.position = "absolute";
   canvas.clear = function(){
     this.context.save();
     this.context.resetTransform();
     this.context.clearRect(0, 0, this.width, this.height);
     this.context.restore();
   };
-  document.getElementById('gameContainer').appendChild(canvas);
   return canvas;
 }
 
 function shuffle(arr){
   for(let i = arr.length - 1; i > 0; i--){
-	const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
