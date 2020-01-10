@@ -33,24 +33,6 @@ export default class Graphics {
     window.requestAnimationFrame(this.refresher.bind(this));
   }
 
-  keyPressHandler(event){
-    if(this.keyPressed){
-      this.keyPressed(event);
-    }
-  }
-
-  keyReleaseHandler(event){
-    if(this.keyReleased){
-      this.keyReleased(event);
-    }
-  }
-
-  resizeHandler(event){
-    if(this.windowResized){
-      this.windowResized(event);
-    }
-  }
-
   loadImage(path){
     let img = new Image();
     img.src = path;
@@ -98,9 +80,9 @@ export default class Graphics {
     this.gameState.next = new Tetromino(this.gameState.sequence[0], this.spriteArray, this.tileGrid);
     this.gameState.nextTetromino();
     if(!this.listening){
-      window.addEventListener('keydown', this.keyPressHandler.bind(this));
-      window.addEventListener('keyup', this.keyReleaseHandler.bind(this));
-      window.addEventListener('resize', this.resizeHandler.bind(this));
+      window.addEventListener('keydown', this.keyPressed.bind(this));
+      window.addEventListener('keyup', this.keyReleased.bind(this));
+      window.addEventListener('resize', this.windowResized.bind(this));
       this.listening = true;
     }
   }
@@ -160,12 +142,17 @@ export default class Graphics {
     }
   }
 
-  update(){
+  update(options = {}){
+    if(options.drop){
+      while(this.gameState.active.canDrop){
+        this.gameState.active.y++;
+      }
+    }
     let now = this.frameCount;
     if(now === 0){
       return "backCanvas";
     }
-    if(now - this.lastUpdate > this.tickSpeed){
+    if(now - this.lastUpdate > this.tickSpeed || options.drop){
       this.lastUpdate = now;
       if(!this.gameState.active.canDrop){
         this.gameState.active.anchor();
@@ -203,6 +190,12 @@ export default class Graphics {
         break;
       case "Escape":
         this.gameState.paused ^= true;
+        break;
+      case "KeyD":
+        this.update({
+          drop: true,
+        });
+        this.draw("backCanvas");
         break;
     }
     this.draw("frontCanvas");
