@@ -40,18 +40,18 @@ export default class TileGrid {
       }
     }
     switch(clearedLines){
-    case 1:
-      gameState.score += 40 * (gameState.level + 1);
-      break;
-    case 2:
-      gameState.score += 100 * (gameState.level + 1);
-      break;
-    case 3:
-      gameState.score += 300 * (gameState.level + 1);
-      break;
-    case 4:
-      gameState.score += 1200 * (gameState.level + 1);
-      break;
+      case 1:
+        gameState.score += 40 * (gameState.level + 1);
+        break;
+      case 2:
+        gameState.score += 100 * (gameState.level + 1);
+        break;
+      case 3:
+        gameState.score += 300 * (gameState.level + 1);
+        break;
+      case 4:
+        gameState.score += 1200 * (gameState.level + 1);
+        break;
     }
     gameState.clearedLines += clearedLines;
     gameState.level = ~~(gameState.clearedLines / 10);

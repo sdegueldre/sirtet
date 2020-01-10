@@ -126,12 +126,17 @@ export default class Graphics {
         this.level.textContent = `Level: ${this.gameState.level}`;
         this.nextCanvas.clear();
         this.gameState.next.display(-3, 0, this.tileSize, this.nextCanvas);
-        toRedraw = "frontCanvas";
       }
-      if(toRedraw === "frontCanvas"){
-        this.frontCanvas.clear();
-        this.gameState.active.display(0, 0, this.tileSize, this.frontCanvas);
+      this.frontCanvas.clear();
+      this.gameState.active.display(0, 0, this.tileSize, this.frontCanvas);
+      const prevY = this.gameState.active.y;
+      while(this.gameState.active.canDrop){
+        this.gameState.active.y++;
       }
+      this.frontCanvas.context.globalAlpha = 0.1 * (Math.sin(this.frameCount / 15) + 1) + 0.25;
+      this.gameState.active.display(0, 0, this.tileSize, this.frontCanvas);
+      this.frontCanvas.context.globalAlpha = 1.0;
+      this.gameState.active.y = prevY;
     }
     if(this.gameState.paused){
       if(this.menu.style.display !== 'flex'){
